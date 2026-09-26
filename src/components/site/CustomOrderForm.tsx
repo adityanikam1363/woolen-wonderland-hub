@@ -18,25 +18,25 @@ const schema = z.object({
 
 export function CustomOrderForm() {
   const [busy, setBusy] = useState(false);
-  const [form, setForm] = useState({ name: "", phone: "", product_type: CATEGORIES[0], size: "", message: "" });
+  const [form, setForm] = useState({ name: "", phone: "", product_type: CATEGORIES[0]!, size: "", message: "" });
   const set = (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) =>
     setForm({ ...form, [k]: e.target.value });
 
-  async function submit(e: React.FormEvent) {
+  async function submit(e: React.FormEvent): Promise<void> {
     e.preventDefault();
     const parsed = schema.safeParse(form);
-    if (!parsed.success) return toast.error(parsed.error.issues[0].message);
+    if (!parsed.success) { toast.error(parsed.error.issues[0]?.message ?? "Invalid form"); return; }
     setBusy(true);
     const { error } = await supabase.from("custom_orders").insert(parsed.data);
     setBusy(false);
-    if (error) return toast.error("Could not send. Please try WhatsApp.");
+    if (error) { toast.error("Could not send. Please try WhatsApp."); return; }
     toast.success("Thank you! We will contact you soon.");
     const d = parsed.data;
     window.open(
       whatsappLink(`Custom order request\nName: ${d.name}\nPhone: ${d.phone}\nProduct: ${d.product_type}\nSize: ${d.size}\n${d.message}`),
       "_blank",
     );
-    setForm({ name: "", phone: "", product_type: CATEGORIES[0], size: "", message: "" });
+    setForm({ name: "", phone: "", product_type: CATEGORIES[0]!, size: "", message: "" });
   }
 
   return (

@@ -2,7 +2,7 @@ import { MessageCircle } from "lucide-react";
 import type { Product } from "@/lib/products";
 import { whatsappLink } from "@/lib/site";
 
-export function ProductGrid({ products, loading }: { products?: Product[]; loading?: boolean }) {
+export function ProductGrid({ products, loading }: { products?: Product[] | undefined; loading?: boolean }) {
   if (loading) {
     return (
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">

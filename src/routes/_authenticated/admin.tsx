@@ -26,7 +26,7 @@ export const Route = createFileRoute("/_authenticated/admin")({
 });
 
 type Draft = { id?: string; name: string; description: string; category: string; published: boolean; image_path: string | null; image_url: string | null };
-const empty: Draft = { name: "", description: "", category: CATEGORIES[0], published: true, image_path: null, image_url: null };
+const empty: Draft = { name: "", description: "", category: CATEGORIES[0]!, published: true, image_path: null, image_url: null };
 
 function Admin() {
   const nav = useNavigate();
@@ -73,8 +73,8 @@ function Admin() {
 
   async function save(e: React.FormEvent) {
     e.preventDefault();
-    if (!draft.name.trim()) return toast.error("Please add a product name");
-    if (!draft.id && !file) return toast.error("Please choose a photo");
+    if (!draft.name.trim()) { toast.error("Please add a product name"); return; }
+    if (!draft.id && !file) { toast.error("Please choose a photo"); return; }
     setBusy(true);
     try {
       let image_path = draft.image_path;
@@ -101,7 +101,7 @@ function Admin() {
   async function remove(p: Product) {
     if (!confirm(`Delete "${p.name}"?`)) return;
     const { error } = await supabase.from("products").delete().eq("id", p.id);
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     if (p.image_path) await supabase.storage.from(BUCKET).remove([p.image_path]);
     toast.success("Deleted");
     refresh();
@@ -109,7 +109,7 @@ function Admin() {
 
   async function togglePublish(p: Product) {
     const { error } = await supabase.from("products").update({ published: !p.published }).eq("id", p.id);
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     refresh();
   }
 
