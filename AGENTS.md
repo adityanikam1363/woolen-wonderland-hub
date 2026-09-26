@@ -8,3 +8,7 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+
+## Architecture rules
+- Owner = `admin` row in `user_roles`; first signed-in account claims it via `claim_owner()` RPC, all writes enforced by RLS `has_role`. Why: owner-only management without hardcoded emails.
+- Product images live in private `product-images` bucket and are shown via signed URLs (`src/lib/products.ts`). Why: workspace blocks public buckets.
