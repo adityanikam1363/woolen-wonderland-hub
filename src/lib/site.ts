@@ -16,6 +16,7 @@ export const CATEGORIES = [
   "Toran",
   "Door Hanging",
   "Custom Design",
+  "Other",
 ];
 
 export function whatsappLink(text: string) {
